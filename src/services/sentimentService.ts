@@ -24,34 +24,64 @@ export async function analyzeSentiment(text: string, apiKey: string): Promise<Se
       }
     );
 
+    console.log('API Response:', JSON.stringify(response.data, null, 2));
+
     // Validate the API response
-    if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
-      throw new Error('Invalid API response format');
+    if (!response.data) {
+      throw new Error('Empty API response');
     }
 
-    // The API returns an array with a single result
-    const result = response.data[0];
-
-    // Validate the result object
-    if (
-      !result ||
-      typeof result !== 'object' ||
-      !result.label ||
-      typeof result.score !== 'number'
-    ) {
-      throw new Error('Invalid sentiment analysis result');
+    // The API can return either an array or a single object
+    let result;
+    if (Array.isArray(response.data)) {
+      if (response.data.length === 0) {
+        throw new Error('Empty result array from API');
+      }
+      result = response.data[0];
+    } else {
+      result = response.data;
     }
 
-    // Validate the label is one of the expected values
-    if (!['POSITIVE', 'NEGATIVE', 'NEUTRAL'].includes(result.label)) {
-      throw new Error(`Unexpected sentiment label: ${result.label}`);
+    // Check if result has the required properties
+    if (!result || typeof result !== 'object') {
+      throw new Error('Invalid result format from API');
+    }
+
+    // Extract label and score with fallbacks
+    const label = result.label || (result[0] && result[0].label);
+    const score =
+      typeof result.score === 'number'
+        ? result.score
+        : result[0] && typeof result[0].score === 'number'
+          ? result[0].score
+          : 0.5;
+
+    if (!label) {
+      throw new Error('No sentiment label found in API response');
+    }
+
+    // Normalize the label to one of our expected values
+    let normalizedLabel: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
+
+    if (typeof label === 'string') {
+      const upperLabel = label.toUpperCase();
+      if (upperLabel.includes('POSITIVE') || upperLabel === 'POSITIVE') {
+        normalizedLabel = 'POSITIVE';
+      } else if (upperLabel.includes('NEGATIVE') || upperLabel === 'NEGATIVE') {
+        normalizedLabel = 'NEGATIVE';
+      } else {
+        normalizedLabel = 'NEUTRAL';
+      }
+    } else {
+      normalizedLabel = 'NEUTRAL';
     }
 
     return {
-      label: result.label,
-      score: result.score,
+      label: normalizedLabel,
+      score: score,
     };
   } catch (error) {
+    console.error('API Error:', error);
     if (axios.isAxiosError(error)) {
       throw new Error(`API Error: ${error.response?.data?.error || error.message}`);
     }
