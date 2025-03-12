@@ -12,7 +12,8 @@
     "prepare": "husky && husky install",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "axios": "^1.8.2",
@@ -43,5 +44,14 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.0.8"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
   }
 }
