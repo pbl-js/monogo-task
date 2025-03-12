@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { SentimentResponse } from '@/types';
-import { validateText, validateSentimentResponse } from '@/utils/validation';
+import { validateText, parseApiResponse } from '@/utils/zodValidation';
 
 // Hugging Face API endpoint for sentiment analysis
 const API_URL =
@@ -17,7 +17,6 @@ export async function analyzeSentimentAction(text: string): Promise<{
   result?: SentimentResponse;
   error?: string;
 }> {
-  // Validate the text input
   const textValidation = validateText(text);
   if (!textValidation.isValid) {
     return {
@@ -26,7 +25,6 @@ export async function analyzeSentimentAction(text: string): Promise<{
     };
   }
 
-  // Get API key from environment variable
   const apiKey = process.env.HUGGING_FACE_API_KEY;
 
   if (!apiKey) {
@@ -48,73 +46,30 @@ export async function analyzeSentimentAction(text: string): Promise<{
       }
     );
 
-    if (!response.data) {
-      throw new Error('Empty API response');
-    }
-
-    let result;
-    if (Array.isArray(response.data)) {
-      if (response.data.length === 0) {
-        throw new Error('Empty result array from API');
-      }
-      result = response.data[0];
-    } else {
-      result = response.data;
-    }
-
-    if (!result || typeof result !== 'object') {
-      throw new Error('Invalid result format from API');
-    }
-
-    const label = result.label || (result[0] && result[0].label);
-    const score =
-      typeof result.score === 'number'
-        ? result.score
-        : result[0] && typeof result[0].score === 'number'
-          ? result[0].score
-          : 0.5;
-
-    if (!label) {
-      throw new Error('No sentiment label found in API response');
-    }
-
-    // Normalize the label to one of our expected values
-    let normalizedLabel: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
-
-    if (typeof label === 'string') {
-      const upperLabel = label.toUpperCase();
-      if (upperLabel.includes('POSITIVE') || upperLabel === 'POSITIVE') {
-        normalizedLabel = 'POSITIVE';
-      } else if (upperLabel.includes('NEGATIVE') || upperLabel === 'NEGATIVE') {
-        normalizedLabel = 'NEGATIVE';
-      } else {
-        normalizedLabel = 'NEUTRAL';
-      }
-    } else {
-      normalizedLabel = 'NEUTRAL';
-    }
-
-    // Use validateSentimentResponse for final validation
-    const validatedResult = validateSentimentResponse({
-      label: normalizedLabel,
-      score: score,
-    });
+    const validatedResult = parseApiResponse(response);
 
     return {
       success: true,
       result: validatedResult,
     };
   } catch (error) {
-    console.error('API Error:', error);
-    if (axios.isAxiosError(error)) {
-      return {
-        success: false,
-        error: `API Error: ${error.response?.data?.error || error.message}`,
-      };
+    let errorMessage = 'Unknown error occurred';
+
+    console.error('Error in analyzeSentimentAction:', error);
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (axios.isAxiosError(error)) {
+      errorMessage = `API Error: ${error.response?.data?.error || error.message}`;
+
+      if (error.response?.data) {
+        console.error('API Error Response:', error.response.data);
+      }
     }
+
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      error: errorMessage,
     };
   }
 }
