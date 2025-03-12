@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { FaTimes, FaSmile, FaMeh, FaFrown } from 'react-icons/fa';
 import { SentimentResponse } from '@/types';
-import { sentimentInfo } from '@/services/sentimentService';
+import { sentimentInfo } from '@/consts/sentimentInfo';
 import styles from './Modal.module.scss';
 
 interface ModalProps {
@@ -51,9 +51,9 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
 
   const getSentimentIcon = () => {
     const iconMap = {
-      POSITIVE: <FaSmile className={styles.iconPositive} />,
-      NEGATIVE: <FaFrown className={styles.iconNegative} />,
-      NEUTRAL: <FaMeh className={styles.iconNeutral} />,
+      POSITIVE: <FaSmile className={styles.iconPositive} data-testid="sentiment-icon" />,
+      NEGATIVE: <FaFrown className={styles.iconNegative} data-testid="sentiment-icon" />,
+      NEUTRAL: <FaMeh className={styles.iconNeutral} data-testid="sentiment-icon" />,
     };
 
     return iconMap[result.label];

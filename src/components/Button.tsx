@@ -7,7 +7,7 @@ interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary';
   disabled?: boolean;
   isLoading?: boolean;
   fullWidth?: boolean;
@@ -38,7 +38,7 @@ export default function Button({
       `}
     >
       {isLoading ? (
-        <div className={styles.spinner}>
+        <div className={styles.spinner} data-testid="spinner">
           <div className={styles.spinnerDot}></div>
           <div className={styles.spinnerDot}></div>
           <div className={styles.spinnerDot}></div>
