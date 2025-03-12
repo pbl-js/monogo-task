@@ -37,7 +37,6 @@ export default function TextInput({
         onChange={handleChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        rows={6}
         aria-label="Text to analyze"
         aria-invalid={!!error}
       />
