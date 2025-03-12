@@ -24,6 +24,7 @@ export async function analyzeSentiment(text: string, apiKey: string): Promise<Se
       }
     );
 
+    // eslint-disable-next-line no-console
     console.log('API Response:', JSON.stringify(response.data, null, 2));
 
     // Validate the API response
