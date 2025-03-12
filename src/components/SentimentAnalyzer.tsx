@@ -11,51 +11,40 @@ import { SentimentAnalysisState } from '@/types';
 import styles from './SentimentAnalyzer.module.scss';
 
 export default function SentimentAnalyzer() {
-  // State for form inputs
   const [text, setText] = useState('');
   const [apiKey, setApiKey] = useState('');
 
-  // State for validation errors
   const [textError, setTextError] = useState('');
   const [apiKeyError, setApiKeyError] = useState('');
 
-  // State for sentiment analysis
   const [analysisState, setAnalysisState] = useState<SentimentAnalysisState>({
     status: 'idle',
   });
 
-  // State for modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Handle text change
   const handleTextChange = (value: string) => {
     setText(value);
 
-    // Clear error when user starts typing
     if (textError) {
       setTextError('');
     }
   };
 
-  // Handle API key change
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setApiKey(e.target.value);
 
-    // Clear error when user starts typing
     if (apiKeyError) {
       setApiKeyError('');
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate inputs
     const textValidation = validateText(text);
     const apiKeyValidation = validateApiKey(apiKey);
 
-    // Set validation errors if any
     if (!textValidation.isValid) {
       setTextError(textValidation.errorMessage || 'Invalid text');
     }
@@ -64,35 +53,28 @@ export default function SentimentAnalyzer() {
       setApiKeyError(apiKeyValidation.errorMessage || 'Invalid API key');
     }
 
-    // Return if validation fails
     if (!textValidation.isValid || !apiKeyValidation.isValid) {
       return;
     }
 
-    // Set loading state
     setAnalysisState({
       status: 'loading',
     });
 
     try {
-      // Call API to analyze sentiment
       const apiResponse = await analyzeSentiment(text, apiKey);
 
-      // Validate the response using our new validation function
       const validatedResult = validateSentimentResponse(apiResponse);
 
-      // Set success state with validated result
       setAnalysisState({
         status: 'success',
         result: validatedResult,
       });
 
-      // Open modal to display result
       setIsModalOpen(true);
     } catch (error) {
       console.error('Sentiment analysis error:', error);
 
-      // Set error state
       setAnalysisState({
         status: 'error',
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -100,7 +82,6 @@ export default function SentimentAnalyzer() {
     }
   };
 
-  // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };

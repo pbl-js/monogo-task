@@ -27,12 +27,10 @@ export async function analyzeSentiment(text: string, apiKey: string): Promise<Se
     // eslint-disable-next-line no-console
     console.log('API Response:', JSON.stringify(response.data, null, 2));
 
-    // Validate the API response
     if (!response.data) {
       throw new Error('Empty API response');
     }
 
-    // The API can return either an array or a single object
     let result;
     if (Array.isArray(response.data)) {
       if (response.data.length === 0) {
@@ -43,12 +41,10 @@ export async function analyzeSentiment(text: string, apiKey: string): Promise<Se
       result = response.data;
     }
 
-    // Check if result has the required properties
     if (!result || typeof result !== 'object') {
       throw new Error('Invalid result format from API');
     }
 
-    // Extract label and score with fallbacks
     const label = result.label || (result[0] && result[0].label);
     const score =
       typeof result.score === 'number'

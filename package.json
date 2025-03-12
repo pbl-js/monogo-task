@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^20",
@@ -41,7 +40,6 @@
     "eslint-config-next": "15.2.2",
     "husky": "^8.0.0",
     "jsdom": "^26.0.0",
-    "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.0.8"
   },

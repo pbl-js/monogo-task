@@ -15,7 +15,6 @@ interface ModalProps {
 export default function Modal({ isOpen, onClose, result }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Close modal when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -32,7 +31,6 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
     };
   }, [isOpen, onClose]);
 
-  // Close modal when pressing Escape key
   useEffect(() => {
     function handleEscapeKey(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -51,7 +49,6 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
 
   if (!isOpen) return null;
 
-  // Get sentiment icon based on the result
   const getSentimentIcon = () => {
     const iconMap = {
       POSITIVE: <FaSmile className={styles.iconPositive} />,
@@ -62,7 +59,6 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
     return iconMap[result.label];
   };
 
-  // Get sentiment info
   const info = sentimentInfo[result.label];
 
   return (

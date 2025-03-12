@@ -20,12 +20,10 @@ export default function TextInput({
 }: TextInputProps) {
   const [charCount, setCharCount] = useState(0);
 
-  // Update character count when value changes
   useEffect(() => {
     setCharCount(value.length);
   }, [value]);
 
-  // Handle text change
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
