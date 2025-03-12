@@ -53,20 +53,17 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
 
   // Get sentiment icon based on the result
   const getSentimentIcon = () => {
-    switch (result?.label) {
-      case 'POSITIVE':
-        return <FaSmile className={styles.iconPositive} />;
-      case 'NEGATIVE':
-        return <FaFrown className={styles.iconNegative} />;
-      case 'NEUTRAL':
-        return <FaMeh className={styles.iconNeutral} />;
-      default:
-        return null;
-    }
+    const iconMap = {
+      POSITIVE: <FaSmile className={styles.iconPositive} />,
+      NEGATIVE: <FaFrown className={styles.iconNegative} />,
+      NEUTRAL: <FaMeh className={styles.iconNeutral} />,
+    };
+
+    return iconMap[result.label];
   };
 
   // Get sentiment info
-  const info = result?.label ? sentimentInfo[result.label] : null;
+  const info = sentimentInfo[result.label];
 
   return (
     <div className={styles.modalOverlay}>
@@ -77,20 +74,16 @@ export default function Modal({ isOpen, onClose, result }: ModalProps) {
 
         <div className={styles.sentimentResult}>
           <div className={styles.iconContainer}>{getSentimentIcon()}</div>
-          <h2 className={styles.sentimentLabel}>
-            {result?.label ? result.label.toLowerCase() : 'unknown'}
-          </h2>
-          <div className={styles.sentimentScore}>
-            Confidence: {result?.score ? Math.round(result.score * 100) : 0}%
-          </div>
+          <h2 className={styles.sentimentLabel}>{result.label.toLowerCase()}</h2>
+          <div className={styles.sentimentScore}>Confidence: {Math.round(result.score * 100)}%</div>
         </div>
 
         <div className={styles.sentimentInfo}>
           <h3>What does this mean?</h3>
-          <p>{info?.description || 'No information available'}</p>
+          <p>{info.description}</p>
 
           <h3>Pro Tip</h3>
-          <p>{info?.tip || 'No tip available'}</p>
+          <p>{info.tip}</p>
         </div>
       </div>
     </div>

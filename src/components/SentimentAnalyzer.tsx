@@ -6,7 +6,7 @@ import TextInput from './TextInput';
 import Button from './Button';
 import Modal from './Modal';
 import { analyzeSentiment } from '@/services/sentimentService';
-import { validateText, validateApiKey } from '@/utils/validation';
+import { validateText, validateApiKey, validateSentimentResponse } from '@/utils/validation';
 import { SentimentAnalysisState } from '@/types';
 import styles from './SentimentAnalyzer.module.scss';
 
@@ -76,17 +76,15 @@ export default function SentimentAnalyzer() {
 
     try {
       // Call API to analyze sentiment
-      const result = await analyzeSentiment(text, apiKey);
+      const apiResponse = await analyzeSentiment(text, apiKey);
 
-      // Validate the result
-      if (!result || !result.label) {
-        throw new Error('Invalid response from sentiment analysis API');
-      }
+      // Validate the response using our new validation function
+      const validatedResult = validateSentimentResponse(apiResponse);
 
-      // Set success state
+      // Set success state with validated result
       setAnalysisState({
         status: 'success',
-        result,
+        result: validatedResult,
       });
 
       // Open modal to display result
