@@ -3,19 +3,22 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Modal from '../Modal';
 import { SentimentResponse } from '@/types';
 
-vi.mock('@/services/sentimentService', () => ({
+vi.mock('@/consts/sentimentInfo', () => ({
   sentimentInfo: {
     POSITIVE: {
-      description: 'Positive description',
-      tip: 'Positive tip',
+      description:
+        'The text expresses a positive sentiment, showing approval, happiness, or optimism.',
+      tip: 'To maintain this positive tone, continue using affirmative language and focus on benefits and solutions.',
     },
     NEGATIVE: {
-      description: 'Negative description',
-      tip: 'Negative tip',
+      description:
+        'The text expresses a negative sentiment, showing disapproval, sadness, or pessimism.',
+      tip: 'To shift to a more positive tone, try focusing on solutions rather than problems, and use more constructive language.',
     },
     NEUTRAL: {
-      description: 'Neutral description',
-      tip: 'Neutral tip',
+      description:
+        'The text expresses a neutral sentiment, showing neither strong approval nor disapproval.',
+      tip: 'To make your message more engaging, consider adding more descriptive or emotional language that aligns with your intent.',
     },
   },
 }));
@@ -63,8 +66,16 @@ describe('Modal Component', () => {
     render(<Modal isOpen={true} onClose={mockOnClose} result={positiveResult} />);
     expect(screen.getByText('positive')).toBeInTheDocument();
     expect(screen.getByText('Confidence: 95%')).toBeInTheDocument();
-    expect(screen.getByText('Positive description')).toBeInTheDocument();
-    expect(screen.getByText('Positive tip')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'The text expresses a positive sentiment, showing approval, happiness, or optimism.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'To maintain this positive tone, continue using affirmative language and focus on benefits and solutions.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('calls onClose when close button is clicked', () => {

@@ -17,7 +17,7 @@ A frontend application that allows users to analyze the sentiment of text using 
 - **Styling**: SCSS modules for component-specific styling
 - **Icons**: React Icons
 - **HTTP Client**: Axios
-- **Code Quality**: ESLint, Prettier, and Husky for pre-commit hooks
+- **Code Quality**: ESLint, Prettier, and Husky for pre-commit and pre-push hooks
 
 ## Getting Started
 
@@ -25,7 +25,6 @@ A frontend application that allows users to analyze the sentiment of text using 
 
 - Node.js 18.x or later
 - npm or yarn
-- A Hugging Face API key (get one at [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens))
 
 ### Installation
 
@@ -69,23 +68,3 @@ yarn dev
 1. Enter text (up to 500 characters) in the text input field.
 2. Click the "Analyze Sentiment" button.
 3. View the sentiment analysis results in the modal that appears.
-
-## Development Challenges
-
-During the development of this application, several challenges were faced:
-
-1. **API Integration**: Working with the Hugging Face API required understanding their specific request/response format and error handling.
-
-2. **State Management**: Managing the various states of the application (idle, loading, success, error) required careful planning to ensure a smooth user experience.
-
-3. **Modal Implementation**: Creating an accessible modal with proper keyboard navigation and focus management required attention to detail.
-
-4. **Responsive Design**: Ensuring the application looks and works well on various screen sizes required careful CSS planning.
-
-5. **TypeScript Integration**: Properly typing the API responses and application state helped catch potential errors early but required careful planning.
-
-6. **Server-Side Security**: Moving API key handling to the server side using Next.js server actions to enhance security and prevent exposing sensitive information to clients.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
