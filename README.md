@@ -9,6 +9,7 @@ A frontend application that allows users to analyze the sentiment of text using 
 - Display of sentiment results (positive, negative, neutral) in a modal
 - Responsive design that works on mobile and desktop
 - Error handling and loading states
+- Server-side API key management for enhanced security
 
 ## Technology Stack
 
@@ -43,7 +44,17 @@ npm install
 yarn install
 ```
 
-3. Run the development server:
+3. Set up environment variables:
+
+```bash
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit .env.local and add your Hugging Face API key
+HUGGING_FACE_API_KEY=your_hugging_face_api_key_here
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
@@ -51,14 +62,13 @@ npm run dev
 yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
 ## Usage
 
 1. Enter text (up to 500 characters) in the text input field.
-2. Enter your Hugging Face API key in the API key field.
-3. Click the "Analyze Sentiment" button.
-4. View the sentiment analysis results in the modal that appears.
+2. Click the "Analyze Sentiment" button.
+3. View the sentiment analysis results in the modal that appears.
 
 ## Development Challenges
 
@@ -73,6 +83,8 @@ During the development of this application, several challenges were faced:
 4. **Responsive Design**: Ensuring the application looks and works well on various screen sizes required careful CSS planning.
 
 5. **TypeScript Integration**: Properly typing the API responses and application state helped catch potential errors early but required careful planning.
+
+6. **Server-Side Security**: Moving API key handling to the server side using Next.js server actions to enhance security and prevent exposing sensitive information to clients.
 
 ## License
 

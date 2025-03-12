@@ -1,22 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FaSearch, FaInfoCircle } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import TextInput from './TextInput';
 import Button from './Button';
 import Modal from './Modal';
-import { analyzeSentiment } from '@/services/sentimentService';
-import { validateText, validateApiKey, validateSentimentResponse } from '@/utils/validation';
+import { validateText } from '@/utils/validation';
 import { SentimentAnalysisState } from '@/types';
 import styles from './SentimentAnalyzer.module.scss';
+import { analyzeSentimentAction } from '@/app/actions';
 
 export default function SentimentAnalyzer() {
   const [text, setText] = useState('');
-  const [apiKey, setApiKey] = useState('');
-
   const [textError, setTextError] = useState('');
-  const [apiKeyError, setApiKeyError] = useState('');
-
   const [analysisState, setAnalysisState] = useState<SentimentAnalysisState>({
     status: 'idle',
   });
@@ -31,44 +27,31 @@ export default function SentimentAnalyzer() {
     }
   };
 
-  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setApiKey(e.target.value);
-
-    if (apiKeyError) {
-      setApiKeyError('');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const textValidation = validateText(text);
-    const apiKeyValidation = validateApiKey(apiKey);
 
     if (!textValidation.isValid) {
       setTextError(textValidation.errorMessage || 'Invalid text');
-    }
-
-    if (!apiKeyValidation.isValid) {
-      setApiKeyError(apiKeyValidation.errorMessage || 'Invalid API key');
-    }
-
-    if (!textValidation.isValid || !apiKeyValidation.isValid) {
       return;
     }
 
+    // Set loading state
     setAnalysisState({
       status: 'loading',
     });
 
     try {
-      const apiResponse = await analyzeSentiment(text, apiKey);
+      const response = await analyzeSentimentAction(text);
 
-      const validatedResult = validateSentimentResponse(apiResponse);
+      if (!response.success || !response.result) {
+        throw new Error(response.error || 'Failed to analyze sentiment');
+      }
 
       setAnalysisState({
         status: 'success',
-        result: validatedResult,
+        result: response.result,
       });
 
       setIsModalOpen(true);
@@ -108,29 +91,6 @@ export default function SentimentAnalyzer() {
             placeholder="Enter text to analyze (max 500 characters)..."
             error={textError}
           />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="apiKey" className={styles.label}>
-            Hugging Face API Key
-            <a
-              href="https://huggingface.co/settings/tokens"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.apiKeyHelp}
-            >
-              <FaInfoCircle /> Get API Key
-            </a>
-          </label>
-          <input
-            id="apiKey"
-            type="password"
-            value={apiKey}
-            onChange={handleApiKeyChange}
-            placeholder="Enter your Hugging Face API key..."
-            className={`${styles.apiKeyInput} ${apiKeyError ? styles.hasError : ''}`}
-          />
-          {apiKeyError && <div className={styles.errorMessage}>{apiKeyError}</div>}
         </div>
 
         <div className={styles.formActions}>
